@@ -46,4 +46,24 @@ actor OpenD {
 
     };
 
+
+    public shared(msg) func listItem(id: Principal, price: Nat) : async Text {
+      var item : NFTActorClass.NFT = switch (mapOfNFTs.get(id)) {
+        case null return "NFT does not exist.";
+        case (?result) result;
+      };
+
+      let owner = await item.getOwner();
+      if (Principal.equal(owner, msg.caller)) {
+        let newListing : Listing = {
+          itemOwner = owner;
+          itemPrice = price;
+        };
+        mapOfListings.put(id, newListing);
+        return "Success";
+      } else {
+        return "You don't own the NFT."
+      }
+    };
+    
 };
