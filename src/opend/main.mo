@@ -66,4 +66,32 @@ actor OpenD {
       }
     };
     
+    public query func getListedNFTPrice(id: Principal) : async Nat {
+      var listing : Listing = switch (mapOfListings.get(id)) {
+        case null return 0;
+        case (?result) result;
+      };
+
+      return listing.itemPrice;
+
+    };
+
+    public query func getListedNFTs() : async [Principal] {
+      let ids = Iter.toArray(mapOfListings.keys());
+      return ids;
+    };
+
+    public query func getOwnedNFTs(user: Principal) : async [Principal] {
+      var userNFTs : List.List<Principal> = switch (mapOfOwners.get(user)) {
+        case null List.nil<Principal>();
+        case (?result) result;
+      };
+
+      return List.toArray(userNFTs);
+    };
+
+    public query func getOpenDCanisterID() : async Principal {
+      return Principal.fromActor(OpenD);
+    };
+
 };
